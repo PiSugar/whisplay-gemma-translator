@@ -28,6 +28,7 @@ import socket
 import ssl
 import time
 import subprocess
+import signal
 
 import threading
 from contextlib import contextmanager
@@ -675,26 +676,26 @@ class ProxyHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             self.wfile.write(str(e).encode('utf-8'))
 
     def handle_kiosk_exit(self):
-        if not is_local_client(self.client_address):
+        if (not is_local_client(self.client_address)
+                or self.headers.get('Sec-Fetch-Site') in ('same-site', 'cross-site')):
             self.send_response(403)
             self.end_headers()
             self.wfile.write(b'Forbidden: Kiosk control is only accessible locally')
             return
 
+        payload = b'{"status":"exiting"}'
+        self.send_response(200)
+        self.send_header('Content-Type', 'application/json')
+        self.send_header('Content-Length', str(len(payload)))
+        self.end_headers()
         try:
-            subprocess.Popen(
-                ['pkill', '-f', '^/usr/lib/chromium/chromium .*127[.]0[.]0[.]1:3000'],
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-            )
-            self.send_response(200)
-            self.send_header('Content-Type', 'application/json')
-            self.end_headers()
-            self.wfile.write(json.dumps({"status": "exiting"}).encode('utf-8'))
-        except Exception as e:
-            self.send_response(500)
-            self.end_headers()
-            self.wfile.write(str(e).encode('utf-8'))
+            self.wfile.write(payload)
+        finally:
+            supervisor = os.environ.get('TRANSLATOR_SUPERVISOR_PID')
+            if supervisor:
+                os.kill(int(supervisor), signal.SIGTERM)
+            else:
+                self.server.shutdown()
 
     def do_POST(self):
         if self.path.startswith('/proxy'):

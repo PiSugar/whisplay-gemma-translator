@@ -137,7 +137,7 @@ cat > "$DESKTOP_FILE" <<'EOF'
 Type=Application
 Name=Whisplay Translator
 Comment=Open Gemma Translator on the local display
-Exec=sh -lc "XDG_RUNTIME_DIR=/run/user/1000 WAYLAND_DISPLAY=wayland-0 DISPLAY=:0 XAUTHORITY=${HOME}/.Xauthority bash ${HOME}/whisplay-gemma-translator/deploy/whisplay_kiosk.sh"
+Exec=sh -lc "XDG_RUNTIME_DIR=/run/user/1000 WAYLAND_DISPLAY=wayland-0 DISPLAY=:0 XAUTHORITY=${HOME}/.Xauthority bash ${HOME}/whisplay-gemma-translator/deploy/whisplay_kiosk.sh --start-service"
 Terminal=false
 Categories=Utility;
 EOF

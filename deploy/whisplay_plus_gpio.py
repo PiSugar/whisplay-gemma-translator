@@ -115,11 +115,11 @@ def main() -> int:
 
             time.sleep(POLL_SECONDS)
     finally:
-        _write_state(False, ready=False)
         _set_leds(leds, False)
         button.close()
         for led in leds:
             led.close()
+        _write_state(False, ready=False)
 
     return 0
 

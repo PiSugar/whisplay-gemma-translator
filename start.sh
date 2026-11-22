@@ -63,7 +63,13 @@ cleanup() {
     wait 2>/dev/null || true
     echo "[start.sh] All processes stopped."
 }
-trap cleanup EXIT TERM INT
+stop() {
+    trap '' TERM INT
+    pkill -TERM -f "^/usr/lib/chromium/chromium .*--kiosk .*(--class=whisplay-translator( |$)|127[.]0[.]0[.]1:${API_PORT}(/| |$))" 2>/dev/null || true
+    exit 0
+}
+trap cleanup EXIT
+trap stop TERM INT
 
 # Wait for network (max 15s) - simpler check for macOS/Linux
 echo "[start.sh] Waiting for network..."
@@ -120,7 +126,7 @@ done
 
 # Start API server
 echo "[start.sh] Starting API server on port ${API_PORT}..."
-$API_CMD &
+TRANSLATOR_SUPERVISOR_PID="$$" $API_CMD &
 API_PID=$!
 
 if [ "$PROD_MODE" -eq 1 ]; then
