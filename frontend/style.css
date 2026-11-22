@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/* Simple Retro-Terminal Style optimized for 480x320 Handheld (Landscape) */
+/* Retro-terminal interface for handheld and desktop displays. */
 :root {
   --bg-black: #ffa500;
   --red-bright: #000000;
@@ -46,7 +46,6 @@ body,
   background-color: var(--bg-black);
   color: var(--red-bright);
   overflow: hidden;
-  overflow-x: hidden;
   cursor: none;
 }
 
@@ -55,36 +54,13 @@ body,
   body {
     cursor: auto;
   }
-
-  #root {
-    border: 1px solid var(--border-color);
-  }
 }
 
 body {
   display: block;
 }
 
-@media (max-width: 1000px) {
-  html,
-  body,
-  #root,
-  .app-container,
-  .translator-envelope {
-    width: 480px;
-    max-width: 480px;
-  }
-
-  html,
-  body,
-  #root,
-  .app-container {
-    height: 640px;
-    max-height: 640px;
-  }
-}
-
-/* App Wrapper - fills the Pi DSI viewport; desktop keeps the handheld preview. */
+/* Fill the viewport in either display orientation. */
 .translator-envelope {
   position: relative;
   width: 100%;
@@ -96,14 +72,6 @@ body {
   display: flex;
   flex-direction: column;
   min-width: 0;
-}
-
-@media (min-width: 1001px) {
-  .app-container,
-  .translator-envelope {
-    width: 480px;
-    height: 320px;
-  }
 }
 
 .status-wrap-left {
@@ -495,9 +463,32 @@ body {
   align-items: flex-end;
 }
 
+@media (orientation: landscape) {
+  .chat-panel {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: minmax(0, 1fr) auto;
+  }
+
+  .initial-placeholder,
+  .chat-meta {
+    grid-column: 1 / -1;
+  }
+
+  .chat-row-left {
+    padding-bottom: 12px;
+  }
+
+  .chat-row-right {
+    padding-top: 12px;
+  }
+}
+
 /* Bubbles */
 .chat-bubble {
   max-width: 92%;
+  max-height: 100%;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -548,7 +539,7 @@ body {
 }
 
 .bubble-text {
-  font-size: 27px;
+  font-size: clamp(16px, 4.2vmin, 27px);
   line-height: 1.35;
   color: var(--red-bright);
   word-break: break-word;

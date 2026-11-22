@@ -22,7 +22,7 @@ if command -v apt-get &> /dev/null; then
     sudo apt-get update
     sudo apt-get install -y \
         python3-venv python3-pip python3-gpiozero python3-lgpio \
-        ffmpeg libasound2-dev pulseaudio-utils alsa-utils \
+        curl ffmpeg libasound2-dev pulseaudio-utils alsa-utils \
         chromium-browser
     sudo apt-get install -y pipewire-utils 2>/dev/null || true
 else

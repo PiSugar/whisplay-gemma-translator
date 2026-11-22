@@ -63,7 +63,13 @@ cd whisplay-gemma-translator
 ./deploy-whisplay-plus.sh
 ```
 
-To open the translator automatically at boot, enable **Desktop Auto Login** in the Raspberry Pi desktop settings. The kiosk launcher uses Wayland. Reboot to apply the display settings and group membership changes. [Raspberry Pi desktop settings](https://www.raspberrypi.com/documentation/computers/configuration.html)
+If PyPI downloads time out, rerun deployment with a reachable PyPI mirror. For example, to use the Alibaba Cloud mirror:
+
+```bash
+TRANSLATOR_PYPI_INDEX_URL=https://mirrors.aliyun.com/pypi/simple/ ./deploy-whisplay-plus.sh
+```
+
+To open the translator automatically at boot, enable **Desktop Auto Login** in the Raspberry Pi desktop settings. The Wayland kiosk launcher waits for the translator page to respond before opening Chromium. Reboot to apply the display settings and group membership changes. [Raspberry Pi desktop settings](https://www.raspberrypi.com/documentation/computers/configuration.html)
 
 ```bash
 sudo reboot
