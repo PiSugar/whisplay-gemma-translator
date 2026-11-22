@@ -1,6 +1,8 @@
-<img width="960" height="540" src="https://storage.googleapis.com/experiments-uploads/gemma-translator/gemma-translator.gif" />
-
 # Gemma Translator
+
+> **Raspberry Pi 5 + Whisplay Plus + PiSugar 3 Plus** · [Hardware and software installation guide](WHISPLAY-PLUS-SETUP.md)
+
+<img width="960" height="540" src="https://storage.googleapis.com/experiments-uploads/gemma-translator/gemma-translator.gif" />
 
 This repo was built with the assistance of [Google Antigravity](https://antigravity.google/) and includes code to run an on-device, fully offline voice translator powered by [Gemma 4](https://ai.google.dev/gemma/docs/core) and [LiteRT-LM](https://github.com/google-ai-edge/LiteRT-lm). This project features a web frontend optimized for small handheld displays (e.g., 480x320) and a Python API server (`http.server`) that communicates with Gemma. Text-to-speech is powered by [Moonshine](https://github.com/moonshine-ai/moonshine).
 
@@ -15,7 +17,7 @@ https://github.com/user-attachments/assets/343072ce-dc78-44a7-a783-99312845cabe
 
 ## Prerequisites
 
-- Python 3.10+
+- Python 3.12+ (Raspberry Pi OS Trixie provides Python 3.13)
 - Node.js 18+ (20 LTS recommended) & npm — installed automatically by `deploy-pi.sh` on Raspberry Pi OS / Debian
 - Linux or macOS
 
@@ -120,21 +122,7 @@ To deploy as a permanent systemd kiosk service on a Raspberry Pi 5 (8GB):
 ```
 This automated script installs Debian audio/venv packages, sets up the Python environment, builds production UI assets, downloads the LiteRT model, registers the systemd unit from `deploy/gemma-translator.service`, and configures LXDE GUI autostart (`~/.config/lxsession/rpd-x/autostart`) to launch Chromium in kiosk mode pointing to `http://localhost:3000`.
 
-For whisplay-plus hardware (DSI display + touch, whisplay-sound sound card,
-one status LED, and one GPIO push-to-talk button), use:
-```bash
-./deploy-whisplay-plus.sh
-```
-The whisplay-plus deployment adds DSI-friendly Raspberry Pi display settings,
-selects a detected `whisplay` ALSA card as the default audio input/output,
-registers the base translator service, and installs
-`whisplay-plus-gpio.service`. The GPIO bridge maps the physical button to the
-existing `Z` push-to-talk key and drives the LED with an idle heartbeat/pressed
-state. Defaults live in `deploy/whisplay-plus.env` and are copied to
-`/etc/default/whisplay-plus-gpio` on the device; change the BCM GPIO numbers
-there if your board revision uses different pins. The default button is BOARD
-11 / BCM GPIO17; the default RGB LED lines are BOARD 22/18/16 / BCM
-GPIO25/24/23.
+For Whisplay Plus hardware, follow the [Raspberry Pi 5 + Whisplay Plus + PiSugar 3 Plus installation guide](WHISPLAY-PLUS-SETUP.md). It covers assembly, the Whisplay Plus driver, battery management, and deployment with `./deploy-whisplay-plus.sh`.
 
 ## Project Structure
 
